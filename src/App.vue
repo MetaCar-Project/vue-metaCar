@@ -4,40 +4,30 @@
       <a href="/" class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
         <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"/></svg>
       </a>
-  
       <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
         <li>
-          <a href="#" class="logo">
+          <a href="main" class="logo">
             <img src="@/assets/Metacar.png" style="float: left; width: 300px; height: 150px; object-fit: cover;"/>
           </a>
         </li>
       </ul>
-  
       <div class="col-md-3 text-end">
-        <router-link to="/metaCar/login">
-          <button type="button" class="btn btn-outline-primary me-2">Login</button>
-        </router-link>
-
-        <router-link to="/metaCar/signup">
+        <button type="button" class="btn btn-outline-primary me-2">Login</button>
         <button type="button" class="btn btn-primary">Sign-up</button>
-      </router-link>
       </div>
     </header>
-    <router-view/>
-      <!--footer-->
+    </div>
+     <router-view/>
     <div class="container" style="clear:both;">
       <footer class="py-3 my-4">
-
         <p class="text-center text-muted">&copy; 2023 Companyº Metanet</p>
       </footer>
     </div>
-  </div>
 </template>
 <script>
 
 export default {
   name: 'App',
-  
 }
 </script>
 
