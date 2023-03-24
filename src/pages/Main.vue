@@ -1,18 +1,18 @@
 <template>
-  <div>
+  <div class="w-100">
     <!-- 검색창 -->
     <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px; float: left">
-      <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+      <a href="/" class="d-flex c mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
         <svg class="bi pe-none me-2" width="40" height="32"></svg> <span class="fs-4">차종 선택</span>
       </a>
       <hr />
       <form id="searchForm" action="/metaCar/main" method="get">
         <ul class="nav nav-pills flex-column mb-auto">
           <li>
-            <div class="input-group mb-3">
-              <div class="input-group-text">
+            <div class="input-group mb-2">
+              <div class="input-group-text" style="width: 20%">
                 <input
-                  class="form-check-input mt-0"
+                  class="form-check-input p-2 m-0 mt-0"
                   type="checkbox"
                   aria-label="Checkbox for following text input"
                   id="carSmall"
@@ -22,10 +22,10 @@
               </div>
               <div class="form-control text-black">경차</div>
             </div>
-            <div class="input-group mb-3">
-              <div class="input-group-text">
+            <div class="input-group mb-2">
+              <div class="input-group-text" style="width: 20%">
                 <input
-                  class="form-check-input mt-0"
+                  class="form-check-input p-2 m-0 mt-0"
                   type="checkbox"
                   aria-label="Checkbox for following text input"
                   id="carMiddle"
@@ -35,22 +35,36 @@
               </div>
               <div class="form-control text-black">중형</div>
             </div>
-            <div class="input-group mb-3">
-              <div class="input-group-text">
-                <input class="form-check-input mt-0" type="checkbox" aria-label="Checkbox for following text input" id="carBig" name="carBig" value="대형" />
+            <div class="input-group mb-2">
+              <div class="input-group-text" style="width: 20%">
+                <input
+                  class="form-check-input p-2 m-0 mb-0 d-flex justify-content-between"
+                  type="checkbox"
+                  aria-label="Checkbox for following text input"
+                  id="carBig"
+                  name="carBig"
+                  value="대형"
+                />
               </div>
               <div class="form-control text-black">대형</div>
             </div>
 
-            <div class="input-group mb-3">
-              <div class="input-group-text">
-                <input class="form-check-input mt-0" type="checkbox" aria-label="Checkbox for following text input" id="carSUV" name="carSUV" value="suv" />
+            <div class="input-group mb-2">
+              <div class="input-group-text" style="width: 20%">
+                <input
+                  class="form-check-input p-2 m-0 mt-0"
+                  type="checkbox"
+                  aria-label="Checkbox for following text input"
+                  id="carSUV"
+                  name="carSUV"
+                  value="suv"
+                />
               </div>
               <div class="form-control text-black">SUV</div>
             </div>
           </li>
           <li>
-            <div class="input-group mb-3">
+            <div class="input-group mb-2">
               <div class="input-group-prepend">
                 <label class="input-group-text" for="inputGroupSelect01">장소</label>
               </div>
@@ -68,7 +82,7 @@
               <div class="input-group-prepend">
                 <button type="submit" class="btn btn-primary">검색</button>
               </div>
-              <input type="text" name="keyword" placeholder="검색어를 입력하세요" />
+              <input type="text" name="keyword" style="width: 190px" placeholder="검색어를 입력하세요" />
             </div>
           </li>
         </ul>
@@ -78,49 +92,52 @@
       <hr />
     </div>
 
-    <div class="album py-5 bg-light" style="float: left">
-      <div class="container">
-        <div class="col">
-          <div class="card shadow-sm">
-            <title>Placeholder</title> <img src="/resources/img/${car.carModel}.jpg" style="width: 300px; height: 225px" alt="${car.carModel }" />
-            <div class="card-body">
-              <!-- <c:out value="${car.carModel }" /> -->
-              <p>${car.carModel }</p>
-              <p class="card-text"></p>
-              <div class="d-flex justify-content-between align-items-center">
-                <c:choose>
-                  <c:when test="${car.reserveNow eq 'x'}">
+    <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+    <div class="album py-3 bg-light align-items-center justify-content-center" style="width: 72%; float: left">
+      <div class="container w-100">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+          <div class="col">
+            <div class="card shadow-sm">
+              <svg
+                class="bd-placeholder-img card-img-top"
+                width="100%"
+                height="225"
+                xmlns="http://www.w3.org/2000/svg"
+                role="img"
+                aria-label="Placeholder: Thumbnail"
+                preserveAspectRatio="xMidYMid slice"
+                focusable="false"
+              >
+                <title>Placeholder</title>
+                <rect width="100%" height="100%" fill="#55595c"></rect>
+                <text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text>
+              </svg>
+              <div class="card-body">
+                <p class="card-text">
+                  This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.
+                </p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="btn-group">
                     <div class="btn-group">
                       <button
-                        class="btn btn-sm btn-outline-secondary"
+                        class="btn btn-outline-secondary"
                         onclick="window.open('detailcar?carNum=${car.carNum }','차량상세정보','width=620px,height=800px,location=no,status=no,scrollbars=yes');"
                       >
                         상세정보
                       </button>
                       <button type="button" class="btn btn-outline-primary" onclick="location.href='/metaCar/rental?carNum=${car.carNum}'">대여하기</button>
                     </div>
-                  </c:when>
-                  <!-- <c:otherwise> -->
-                  <!-- <div class="btn-group">
-                      <button
-                        class="btn btn-sm btn-outline-secondary"
-                        onclick="window.open('detailcar?carNum=${car.carNum }','차량상세정보','width=620px,height=800px,location=no,status=no,scrollbars=yes');"
-                      >
-                        상세정보
-                      </button>
-                    </div>
-                    <small class="text-muted">대여불가능</small> -->
-                  <!-- </c:otherwise> -->
-                </c:choose>
+                  </div>
+                  <small class="text-muted">9 mins</small>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <br />
-    <br />
-    <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px; float: right">
+    <!-- CARD END-->
+    <div class="d-flex flex-column flex-shrink-0 text-bg-dark" style="width: 280px; float: right">
       <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
         <use xlink:href="metaCar/main"></use>
         <span class="fs-4" style="text-align: center">예약된 차 확인</span>
@@ -180,11 +197,31 @@
 </template>
 
 <script>
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import Axios from "axios";
 
 export default {
   setup() {
     const router = useRouter();
+    const error = ref("");
+    let timeout = null;
+
+    const getCarList = async () => {
+      error.value = "";
+
+      Axios.get("http://localhost:8082/main/").then((res) => {
+        alert(res.data);
+      });
+    };
+
+    onMounted(() => {
+      timeout = setTimeout(() => {
+        getCarList();
+      }, 2000);
+    });
+
+    return { getCarList };
   },
 };
 </script>
