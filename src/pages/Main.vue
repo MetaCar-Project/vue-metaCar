@@ -1,6 +1,7 @@
 <template>
   <div>
     <!-- 검색창 -->
+
     <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px; float: left">
       <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
         <svg class="bi pe-none me-2" width="40" height="32"></svg> <span class="fs-4">차종 선택</span>
@@ -78,30 +79,36 @@
       <hr />
     </div>
 
+
+    <!--
     <div class="album py-5 bg-light" style="float: left">
       <div class="container">
+        <li class="lists" v-for="car in lists" :key="car.carNum">
         <div class="col">
           <div class="card shadow-sm">
-            <title>Placeholder</title> <img src="/resources/img/${car.carModel}.jpg" style="width: 300px; height: 225px" alt="${car.carModel }" />
+            <title>Placeholder</title> 
+            <img: src="/assets/{{car.carModel}}.jpg"
+            style="width: 300px; height: 225px" />
             <div class="card-body">
-              <!-- <c:out value="${car.carModel }" /> -->
-              <p>${car.carModel }</p>
+ 
               <p class="card-text"></p>
               <div class="d-flex justify-content-between align-items-center">
-                <c:choose>
-                  <c:when test="${car.reserveNow eq 'x'}">
+                <li
+                  v-show="reserveNow == 'o'">
                     <div class="btn-group">
                       <button
                         class="btn btn-sm btn-outline-secondary"
-                        onclick="window.open('detailcar?carNum=${car.carNum }','차량상세정보','width=620px,height=800px,location=no,status=no,scrollbars=yes');"
-                      >
+                        onclick="window.open('detailcar?carNum=${car.carNum }'
+                        ,'차량상세정보','width=620px,height=800px,location=no,status=no,scrollbars=yes');">
                         상세정보
                       </button>
-                      <button type="button" class="btn btn-outline-primary" onclick="location.href='/metaCar/rental?carNum=${car.carNum}'">대여하기</button>
+                      <button type="button" class="btn btn-outline-primary" 
+                      onclick="location.href='/metaCar/rental?carNum=${car.carNum}'">대여하기</button>
                     </div>
-                  </c:when>
-                  <!-- <c:otherwise> -->
-                  <!-- <div class="btn-group">
+                </li>
+                <li
+                  v-show="reserveNow == 'x'">
+                  <div class="btn-group">
                       <button
                         class="btn btn-sm btn-outline-secondary"
                         onclick="window.open('detailcar?carNum=${car.carNum }','차량상세정보','width=620px,height=800px,location=no,status=no,scrollbars=yes');"
@@ -109,15 +116,16 @@
                         상세정보
                       </button>
                     </div>
-                    <small class="text-muted">대여불가능</small> -->
-                  <!-- </c:otherwise> -->
-                </c:choose>
+                    <small class="text-muted">대여불가능</small>
+                </li>
               </div>
             </div>
           </div>
         </div>
+        </li>
       </div>
     </div>
+
     <br />
     <br />
     <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px; float: right">
@@ -126,14 +134,15 @@
         <span class="fs-4" style="text-align: center">예약된 차 확인</span>
       </a>
       <hr />
-      <c:choose>
-        <c:when test="${empty user_id}">
-          <img src="@/assets/unx.jpg" style="width: 100%; height: 225px" />
-        </c:when>
-        <c:when test="${!empty user_id}">
-          <img src="@/assets/unx.jpg" style="width: 100%; height: 225px" id="rentalImg" />
-        </c:when>
-      </c:choose>
+
+      <li 
+        v:show="{{user_id}} == empty">
+          <img :src="unx.jpg" style="width: 100%; height: 225px" />
+      </li>
+      <li
+        v:show="{{user_id}} != empty">
+          <img :src="car.jpg" style="width: 100%; height: 225px" id="rentalImg"/>
+      </li>
 
       <hr />
       <ul class="nav nav-pills flex-column mb-auto">
@@ -142,12 +151,6 @@
             <svg class="bi pe-none me-2" width="16" height="16">
               <use xlink:href=""></use>
             </svg>
-            <sec:authorize access="isAnonymous()">
-              <!-- 로그인 안 한 익명일 경우 -->
-              <!-- 로그인 후 이용가능
-          </sec:authorize>
-          <sec:authorize access="isAuthenticated()"> -->
-              <!-- 로그인(인증된) 사용자인 경우 -->
               <span id="textbox">대여한 차량이 없습니다.</span>
             </sec:authorize>
             <input type="hidden" name="rental_id" value="" />
@@ -155,16 +158,18 @@
         </li>
       </ul>
     </div>
+    -->
 
-    <div class="pull-right" style="clear: both; text-align: center">
+    <!--페이징-->
+    <!-- <div class="pull-right" style="clear: both; text-align: center">
       <ul style="text-align: center">
-        <c:if test="${pageMaker.prev }">
+        <v-if="${pageMaker.prev }">
           <li style="display: inline-block; text-decoration-line: none" class="paginate_button previous">
             <a href="${pageMaker.startPage -1 }">Previous</a>
           </li>
-        </c:if>
+        </v-if>
         <c:forEach var="num" begin="${pageMaker.startPage }" end="${pageMaker.endPage }">
-          <!-- <li style="display: inline-block;" class="paginate_button ${pageMaker.cri.pageNum == num ? "active":"" } "> -->
+  <li style="display: inline-block;" class="paginate_button ${pageMaker.cri.pageNum == num ? "active":"" } ">
           <li style="display: inline-block" class="paginate_button">
             <a style="margin-left: 4px" class="btn btn-outline-primary" href="${num }">${num }</a>
           </li>
@@ -175,18 +180,36 @@
           </li>
         </c:if>
       </ul>
-    </div>
+    </div>-->
   </div>
 </template>
 
 <script>
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import Axios from "axios";
 
 export default {
   setup() {
     const router = useRouter();
+    const error = ref("");
+    let timeout = null;
+    const CarList = async () => {
+      error.value = "";
+      Axios.get("http://localhost:8082/metaCar/main").then((res) => {
+        alert(res.data);
+      });
+    };
+    onMounted(() => {
+      timeout = setTimeout(() => {
+        CarList();
+      }, 2000);
+    });
+    return { CarList };
   },
 };
+
 </script>
 
-<style></style>
+<style>
+</style>
