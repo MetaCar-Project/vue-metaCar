@@ -70,15 +70,30 @@
         </div>
         
         <input type='button' class="btn btn-primary" value='예약취소목록' style="float: right;"
-            onclick="location.href='/metaCar/cancel/${user.id}'" />
+        @click="moveCancel"/>
     </main>
 </template>
 
 <script>
-
+import { useRouter,useRoute } from 'vue-router';
 
 export default {
   
+    setup(){
+        const router = useRouter();
+        const route = useRoute();
+        const id = route.params.id;
+        const moveCancel = function(){
+            router.push({
+                name : "Cancel",
+                params : {"id": id }
+            })
+        }
+
+        return{
+            moveCancel
+        }
+    }
 }
 </script>
 
