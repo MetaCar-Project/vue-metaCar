@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Profile from "../pages/profile.vue";
 import Login from "../pages/login.vue";
 import Signup from "../pages/signup.vue";
+import Rental from "../pages/rental.vue"
 import Main from "../pages/main.vue";
 import Detail from "../pages/detail.vue";
 
@@ -33,6 +34,11 @@ const router = createRouter({
       name: "Signup",
       component: Signup,
     },
+    {
+      path: '/metaCar/rental',
+      name: 'Rental',
+      component: Rental
+    }
   ],
 });
 
