@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Profile from "../pages/profile.vue";
-import Login from "../pages/login.vue";
-import Signup from "../pages/signup.vue";
-import Rental from "../pages/rental.vue"
-import Main from "../pages/main.vue";
-import Detail from "../pages/detail.vue";
+import Profile from "@/pages/Profile.vue";
+import Login from "@/pages/Login.vue";
+import Signup from "@/pages/Signup.vue";
+import Rental from "@/pages/Rental.vue"
+import Main from "@/pages/Main.vue";
+import Detail from "@/pages/Detail.vue";
 
 const router = createRouter({
   history: createWebHistory(),
