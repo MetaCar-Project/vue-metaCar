@@ -83,6 +83,11 @@ export default {
         const router = useRouter();
         const route = useRoute();
         const id = route.params.id;
+        // const rentaladd = ref('');
+        // const carnum = ref('');
+        // const carmodel = ref('');
+        // const usetime = ref('');
+
         const moveCancel = function(){
             router.push({
                 name : "Cancel",
