@@ -2,9 +2,10 @@ import { createRouter, createWebHistory } from "vue-router";
 import Profile from "@/pages/Profile.vue";
 import Login from "@/pages/Login.vue";
 import Signup from "@/pages/Signup.vue";
-import Rental from "@/pages/Rental.vue"
+import Rental from "@/pages/Rental";
 import Main from "@/pages/Main.vue";
 import Detail from "@/pages/Detail.vue";
+import Cancel from "@/pages/Cancel.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -35,10 +36,15 @@ const router = createRouter({
       component: Signup,
     },
     {
-      path: '/metaCar/rental',
-      name: 'Rental',
-      component: Rental
-    }
+      path: "/metaCar/rental",
+      name: "Rental",
+      component: Rental,
+    },
+    {
+      path: "/metaCar/cancel/:id",
+      name: "Cancel",
+      component: Cancel,
+    },
   ],
 });
 

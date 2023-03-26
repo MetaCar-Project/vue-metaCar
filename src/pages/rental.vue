@@ -4,7 +4,7 @@
     <div class="py-5 text-center">
       <img class="d-block mx-auto mb-4" src="/resources/img/${car.carModel}.jpg" alt="${car.carModel }" width="800" height="400">
       <h2>대여 신청</h2>
-      <p class="lead">차번호</p>
+      <p class="lead">{{carNum}}</p>
     </div>
 
     <div class="row g-5">
@@ -19,32 +19,32 @@
               <h6 class="my-0">모델명</h6>
               <small class="text-muted"></small>
             </div>
-            <span class="text-muted">모델명</span>
+            <span class="text-muted">{{carModel}}</span>
           </li>
           <li class="list-group-item d-flex justify-content-between lh-sm">
             <div>
               <h6 class="my-0">제조사</h6>
               <small class="text-muted"></small>
             </div>
-            <span class="text-muted">제조사</span>
+            <span class="text-muted">{{carMaking}}</span>
           </li>
           <li class="list-group-item d-flex justify-content-between lh-sm">
             <div>
               <h6 class="my-0">연료</h6>
               <small class="text-muted"></small>
             </div>
-            <span class="text-muted">연료</span>
+            <span class="text-muted">{{carGas}}</span>
           </li>
           <li class="list-group-item d-flex justify-content-between bg-light">
             <div class="text-success">
               <h6 class="my-0">연비</h6>
               <small></small>
             </div>
-            <span class="text-success">연비</span>
+            <span class="text-success">{{carEff}}</span>
           </li>
           <li class="list-group-item d-flex justify-content-between">
             <span>시간당 가격</span>
-            <strong id="money">가격만원</strong>
+            <strong id="money">{{howmuch}}만원</strong>
           </li>
         </ul>
 		<!-- 
@@ -172,9 +172,61 @@
 </template>
 
 <script>
-
+import axios from "axios";
+import { useRoute,UseRouter } from "vue-router";
+import { ref } from "vue";
 export default {
-    
+    setup(){
+      //const token = route.headers.Authorization;
+      const route = useRoute();
+      // const router = useRouter();
+      const carNum = route.params.carNum;
+      const scZoneNum = ref('');
+      const carKind = ref('');
+      const carMaking = ref('');
+      const carModel = ref('');
+      const carGas = ref('');
+      const carEff = ref('');
+      const howmuch = ref('');
+
+      const getCar = async () =>{
+        const res = await axios.get(`/rental`,{
+          params : {
+                      carNum : "321루7449",
+            
+                  },
+          headers : {Authorization : "eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJzdWIiOiJrb3NhMDEiLCJleHAiOjE2ODEyODczNTh9.4bfkQZp4DdX9r8WGK1u1Bie_zF-UHQHV9QYcTNxS6s0"}
+        }).then((result)=>{
+          console.log(result);
+          carKind.value = result.data.carKind;
+          carMaking.value = result.data.carMaking;
+          carModel.value = result.data.carModel;
+          carGas.value = result.data.carGas;
+          carEff.value = result.data.carEff;
+          howmuch.value = result.data.distanceDto.howmuch;
+        }).catch((result) => {
+          console.log(result.response.status);
+          if(result.response.status==500){
+            alert("오류오류오류오류");
+          }
+          
+        }) 
+      }
+
+      getCar();
+
+
+      return {
+        carNum,
+        scZoneNum,
+        carKind,
+        carMaking,
+        carModel,
+        carGas,
+        carEff,
+        howmuch
+      }
+    }
 }
 </script>
 
