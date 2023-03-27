@@ -15,7 +15,7 @@ const router = createRouter({
       component: Main,
     },
     {
-      path: "/metaCar/detail",
+      path: "/metaCar/detail/:carNum",
       name: "detail",
       component: Detail,
     },
