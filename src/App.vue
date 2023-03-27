@@ -16,7 +16,7 @@ export default {
     FooterComponent
   }
   ,setup(){
-
+    
   }
 }
 </script>

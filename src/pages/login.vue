@@ -24,7 +24,7 @@
                 <br>
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
             </form>
-            <button class="w-100 btn btn-lg btn-primary" @click.prevent="signup">회원가입</button>
+            <button class="w-100 btn btn-lg btn-primary" @click.prevent="signup()">회원가입</button>
             <p class="mt-5 mb-3 text-muted">&copy; 20230309 ~ 20230314</p>
 
             <c:if test="${not empty error}">
@@ -58,7 +58,7 @@ export default {
               console.log(result.headers.token);
               sessionStorage.setItem("token",result.headers.token);
               alert('로그인 성공');
-              router.push({ name : 'Profile', params : {id : id.value}});
+              router.push({ name : 'main', params : {id : id.value}});
               if(result.headers.token==null){
                 alert("로그인 실패");
               }
@@ -68,11 +68,18 @@ export default {
           })
         }
         login2();
+
+        
       }
+
+      const signup = () => {
+          router.push("Signup");
+        }
       return{
         id,
         password,
-        login
+        login,
+        signup
       }
     }
 

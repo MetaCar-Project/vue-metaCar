@@ -11,6 +11,10 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
+      path: "/",
+      redirect: "/metaCar/main",
+    },
+    {
       path: "/metaCar/main",
       name: "main",
       component: Main,
