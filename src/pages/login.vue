@@ -6,11 +6,11 @@
                 <h1 class="h3 mb-3 fw-normal">로그인 해주세요.</h1>
 
                 <div class="form-floating">
-                    <input type="text" class="form-control" name="username" placeholder="id">
+                    <input type="text" class="form-control" name="id" placeholder="id" v-model="id">
                     <label for="floatingInput">아이디</label>
                 </div>
                 <div class="form-floating">
-                    <input type="password" class="form-control" name="password" placeholder="Password">
+                    <input type="password" class="form-control" name="password" placeholder="Password" v-model="password">
                     <label for="floatingPassword">비밀번호</label>
                 </div>
 
@@ -19,12 +19,12 @@
                         <input type="checkbox" value="remember-me"> 아이디 저장
                     </label>
                 </div>
-                <button class="w-100 btn btn-lg btn-primary" type="submit" value="Sign in">로그인</button>
+                <button class="w-100 btn btn-lg btn-primary" type="submit" value="Sign in" @click.prevent="login()">로그인</button>
                 <br>
                 <br>
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
             </form>
-            <button class="w-100 btn btn-lg btn-primary" @click="signup">회원가입</button>
+            <button class="w-100 btn btn-lg btn-primary" @click.prevent="signup">회원가입</button>
             <p class="mt-5 mb-3 text-muted">&copy; 20230309 ~ 20230314</p>
 
             <c:if test="${not empty error}">
@@ -35,9 +35,41 @@
 </template>
 
 <script>
-
+import {ref} from 'vue'
+import axios from 'axios';
 export default {
-    
+    setup(){
+      const token = ref('');
+      const id = ref('');
+      const password = ref('');
+      const login = () =>{
+        console.log(id.value);
+        console.log(password.value);
+        const login2 = async () =>{
+          const res = await axios
+            .post('/login',{
+                              id : id.value,
+                              password : password.value
+                            })
+            .then((result)=>{
+              console.log("success");
+              console.log(result.headers.token);
+              if(result.headers.token==null){
+                alert("로그인 실패");
+              }
+              token.value=result.headers.token;
+          }).catch((result) =>{
+            console.log(result);
+          })
+        }
+        login2();
+      }
+      return{
+        id,
+        password,
+        login
+      }
+    }
 
 }
 </script>
