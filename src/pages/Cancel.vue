@@ -119,14 +119,14 @@ import { ref } from "vue";
 export default {
     setup() {
         const route = useRoute();
-
+        const token = sessionStorage.getItem("token");
         const paramid = route.params.id;
         const id = ref('');
         const rentaltime = ref('');
         const usetime = ref('');
         const returnadd = ref('');
         const carnum = ref('');
-
+        const checkrental = ref('');
         const reservenum = ref('');
         const cancelwhy = ref('');
         const canceldate = ref('');
@@ -137,7 +137,7 @@ export default {
 
         const getRental = async () => {
 
-            const res = await axios.get(`/cancel/${paramid}`).then((carcancel) => {
+            const res = await axios.get(`/cancel/${paramid}`,{headers: { Authorization: token }}).then((carcancel) => {
                 console.log("start");
                 id.value = carcancel.data.rentalGet.id;
                 rentaltime.value = carcancel.data.rentalGet.reserveTime;
@@ -151,21 +151,28 @@ export default {
 
         const getCancel = async () => {
 
-            const res = await axios.get(`/cancel/${paramid}`).then((carcancel) => {
+            const res = await axios.get(`/cancel/${paramid}`,{headers: { Authorization: token }}).then((carcancel) => {
                 console.log("start");
 
                 reservenum.value = carcancel.data.cancel[0].reserveNum;
-                console.log(reservenum.value);
-                console.log(carcancel.data);
+                console.log(carcancel.data.rentalGet);
                 console.log(carcancel.data.cancel[0]);
+                checkrental.value = carcancel.data.rentalGet;
                 cancelwhy.value = carcancel.data.cancel[0].cancelWhy;
                 canceldate.value = carcancel.data.cancel[0].cancelDate;
+                
             })
         };
         getCancel();
 
         const toggleModal = (value) => {
-            modal.value = value;
+            
+            if(checkrental.value !=null){
+                modal.value = value;
+            }else{
+                alert("대여를 먼저 진행해주세요.");
+            }
+            
         };
 
         const confirmCancelReservation = async () => {
@@ -174,7 +181,7 @@ export default {
                 cancelWhy: cancelwhy.value
             };
             try {
-                await axios.post('/cancel', data);
+                await axios.post('/cancel', data,{headers: { Authorization: token }});
                 alert('예약이 취소되었습니다.');
 
                 toggleModal(false);
