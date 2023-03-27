@@ -20,13 +20,38 @@
                         <ul class="list-unstyled mt-3 mb-4">
                             <li>ID : {{ paramid }}</li>
 
-                            <li id="phoneNum"> 핸드폰 번호 : {{ phonnum }}
+                            <li id="phoneNum"> 핸드폰 번호 : {{ phonenum }}
                             </li>
                         </ul>
 
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        <button type="button" class="btn btn-primary" @click="toggleModal(true)">
                             수정하기
                         </button>
+
+                        <div v-if="modal" class="modal-backdrop fade show" style="z-index: 1040;"></div>
+                            <div v-if="modal" class="modal fade show" tabindex="-1" role="dialog"
+                                style="display: block; z-index: 1041;">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">수정 하기</h5>
+                                            <button type="button" class="close" @click="toggleModal(false)">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>정말로 수정하시겠습니까?</p>
+                                            <textarea v-model="phonenum"></textarea>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                @click="toggleModal(false)">취소</button>
+                                            <button type="button" class="btn btn-primary"
+                                                @click="modifyuser">확인</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
                     </div>
                 </div>
@@ -88,8 +113,12 @@ export default {
         const carnum = ref('');
         const carmodel = ref('');
         const usetime = ref('');
-        const phonnum = ref('');
+        const phonenum = ref('');
         const token = sessionStorage.getItem("token");
+        const modal = ref(false);
+
+        sessionStorage.setItem("token", token);
+
         const moveCancel = function () {
             router.push({
                 name: "Cancel",
@@ -100,24 +129,24 @@ export default {
         const profile = async () => {
 
             const res = await axios.get(`/profile/${paramid}`,
-                {headers: { Authorization: token }}
-                    ).then((profile) => {
-                    if(profile.data.rentalCar==null){
-                        username.value = profile.data.name;
-                        phonnum.value = profile.data.phone;
-                    }
-                    else if(profile.data.rentalCar!=null){
-                        username.value = profile.data.name
-                        address.value = profile.data.rentalCar.haveCar.zoneCar.address;
-                        usetime.value = profile.data.rentalCar.useTime;
-                        phonnum.value = profile.data.phone;
-                        console.log(phonnum.value + '12312312312312');
-                        carnum.value = profile.data.rentalCar.haveCar.carNum;
-                        carmodel.value = profile.data.rentalCar.haveCar.carModel;
-                        console.log(phonnum.value + '12312312312312');
-                    }
-                    
-                })
+                { headers: { Authorization: token } }
+            ).then((profile) => {
+                if (profile.data.rentalCar == null) {
+                    username.value = profile.data.name;
+                    phonenum.value = profile.data.phone;
+                }
+                else if (profile.data.rentalCar != null) {
+                    username.value = profile.data.name
+                    address.value = profile.data.rentalCar.haveCar.zoneCar.address;
+                    usetime.value = profile.data.rentalCar.useTime;
+                    phonenum.value = profile.data.phone;
+                    console.log(phonenum.value + '12312312312312');
+                    carnum.value = profile.data.rentalCar.haveCar.carNum;
+                    carmodel.value = profile.data.rentalCar.haveCar.carModel;
+                    console.log(phonenum.value + '12312312312312');
+                }
+
+            })
                 .catch((result) => {
                     console.log(result);
                 })
@@ -125,15 +154,40 @@ export default {
 
         profile();
 
+        const toggleModal = (value) => {
+            modal.value = value;
+            console.log(toggleModal);
+        };
+
+        const modifyuser = async () => {
+            const data = {
+                id : paramid,
+                phone : phonenum.value
+            };
+            try {
+                await axios.post(`/profile/${paramid}`, data, { headers: { Authorization: token } });
+                alert('수정되었습니다.');
+
+                toggleModal(false);
+                location.reload();
+            } catch (error) {
+                // API 호출에 실패했을 때의 처리를 작성합니다.
+                console.error(error);
+            }
+        };
+
         return {
             moveCancel,
             username,
             address,
             usetime,
-            phonnum,
+            phonenum,
             carnum,
             carmodel,
-            paramid
+            paramid,
+            toggleModal,
+            modal,
+            modifyuser
 
 
         }
