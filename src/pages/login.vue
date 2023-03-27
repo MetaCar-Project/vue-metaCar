@@ -35,10 +35,12 @@
 </template>
 
 <script>
+import { useRouter } from 'vue-router';
 import {ref} from 'vue'
 import axios from 'axios';
 export default {
     setup(){
+      const router = useRouter();
       const token = ref('');
       const id = ref('');
       const password = ref('');
@@ -54,6 +56,9 @@ export default {
             .then((result)=>{
               console.log("success");
               console.log(result.headers.token);
+              sessionStorage.setItem("token",result.headers.token);
+              alert('로그인 성공');
+              router.push({ name : 'Profile', params : {id : id.value}});
               if(result.headers.token==null){
                 alert("로그인 실패");
               }

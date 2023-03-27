@@ -119,7 +119,7 @@
 
             <div class="col-md-5">
               <label for="country" class="form-label">이용시간</label>
-              <select class="form-select" id="country" v-model="time">
+              <select class="form-select" id="country" v-model="time" @change="checkTime()">
                 <option value="">시간을 선택하세요</option>
                 <option value="1">1시간</option>
                 <option value="2">2시간</option>
@@ -139,7 +139,7 @@
               	<ul class="list-group mb-3">
           			<li class="list-group-item d-flex justify-content-between lh-sm">
             			<div>
-              				<h6 class="my-0" id="totalPrice"></h6>
+              				<h6 class="my-0" id="totalPrice" >{{ total }} 만원</h6>
               				<small class="text-muted"></small>
             			</div>
             		</li>
@@ -181,19 +181,24 @@ export default {
       const route = useRoute();
       const router = useRouter();
       const carNum = route.params.carNum;
-      const scZoneNum = ref('');
+      const sczoneNum = ref('');
       const carKind = ref('');
       const carMaking = ref('');
       const carModel = ref('');
       const carGas = ref('');
       const carEff = ref('');
       const howmuch = ref('');
-      const id = ref('');
+      const id = route.params.id;
       const name= ref('');
       const time= ref('');
       const returnAdd = ref('');
+      const token = sessionStorage.getItem("token");
+      const total = ref('');
+      const checkTime = () =>{
+        total.value = time.value*howmuch.value;
+      } 
 
-
+      //예약
       const reserve = () => {
         console.log(time.value);
         console.log(returnAdd.value);
@@ -204,15 +209,21 @@ export default {
         const rental = async () =>{
           const res = await axios
             .post('/rental',{
-                              id : id.value,
+                              id : id,
                               useTime : time.value,
                               returnAdd : returnAdd.value,
-                              sczoneNum : scZoneNum.value,
+                              sczoneNum : sczoneNum.value,
                               carNum : carNum
-                            },{headers : {Authorization : "eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJzdWIiOiJwMjEzNTY2IiwiZXhwIjoxNjgxMzQ3MTMwfQ.uC6xZxrxrrLBjloDwJ4cs3CPe5d3G2sy8WZWuhCoLIc"}})
+                            },{headers : {Authorization : token}})
             .then((result)=>{
               console.log("success");
-              console.log(result.response.status);
+              console.log(result);
+              if(result.status==201){
+                alert("예약이 완료되었습니다.");
+                router.push({
+                  name : "main"
+                });
+              }
           }).catch((result) =>{
             console.log(result);
           })
@@ -221,10 +232,10 @@ export default {
 
         
       }
-
+      //처음들어왔을때
       const getCar = async () =>{
         const res = await axios.get(`/rental/${carNum}`,{
-          headers : {Authorization : "eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJzdWIiOiJwMjEzNTY2IiwiZXhwIjoxNjgxMzQ3MTMwfQ.uC6xZxrxrrLBjloDwJ4cs3CPe5d3G2sy8WZWuhCoLIc"}
+          headers : {Authorization : token}
         }).then((result)=>{
           console.log(result);
           carKind.value = result.data.car.carKind;
@@ -233,12 +244,12 @@ export default {
           carGas.value = result.data.car.carGas;
           carEff.value = result.data.car.carEff;
           howmuch.value = result.data.car.distanceDto.howmuch;
-          id.value = result.data.user.id;
           name.value = result.data.user.name;
+          sczoneNum.value = result.data.car.sczoneNum;
         }).catch((result) => {
-          console.log(result.response.status);
+          console.log(result);
           alert("비정상적인 접근");
-          router.push("Main");
+          
         }) 
       }
       getCar();
@@ -249,7 +260,7 @@ export default {
 
       return {
         carNum,
-        scZoneNum,
+        sczoneNum,
         carKind,
         carMaking,
         carModel,
@@ -260,7 +271,9 @@ export default {
         name,
         returnAdd,
         time,
-        reserve
+        reserve,
+        total,
+        checkTime
       }
     }
 }

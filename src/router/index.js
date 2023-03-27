@@ -36,7 +36,7 @@ const router = createRouter({
       component: Signup,
     },
     {
-      path: "/metaCar/rental",
+      path: "/metaCar/rental/:id/:carNum",
       name: "Rental",
       component: Rental,
     },
