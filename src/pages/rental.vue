@@ -69,7 +69,7 @@
               	<ul class="list-group mb-3">
           			<li class="list-group-item d-flex justify-content-between lh-sm">
             			<div>
-              				<h6 class="my-0">아이디</h6>
+              				<h6 class="my-0">{{id}}</h6>
               				<small class="text-muted"></small>
             			</div>
             		</li>
@@ -95,7 +95,7 @@
                 <ul class="list-group mb-3">
           			<li class="list-group-item d-flex justify-content-between lh-sm">
             			<div>
-              				<h6 class="my-0">이름</h6>
+              				<h6 class="my-0">{{name}}</h6>
               				<small class="text-muted"></small>
             			</div>
             		</li>
@@ -173,14 +173,14 @@
 
 <script>
 import axios from "axios";
-import { useRoute,UseRouter } from "vue-router";
+import { useRoute,useRouter } from "vue-router";
 import { ref } from "vue";
 export default {
     setup(){
       //const token = route.headers.Authorization;
       const route = useRoute();
-      // const router = useRouter();
-      const carNum = route.params.carNum;
+      const router = useRouter();
+      const carNum = "321루7449";
       const scZoneNum = ref('');
       const carKind = ref('');
       const carMaking = ref('');
@@ -188,28 +188,26 @@ export default {
       const carGas = ref('');
       const carEff = ref('');
       const howmuch = ref('');
+      const id = ref('');
+      const name= ref('');
 
       const getCar = async () =>{
-        const res = await axios.get(`/rental`,{
-          params : {
-                      carNum : "321루7449",
-            
-                  },
-          headers : {Authorization : "eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJzdWIiOiJrb3NhMDEiLCJleHAiOjE2ODEyODczNTh9.4bfkQZp4DdX9r8WGK1u1Bie_zF-UHQHV9QYcTNxS6s0"}
+        const res = await axios.get(`/rental/${carNum}`,{
+          headers : {Authorization : "eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJzdWIiOiJwMjEzNTY2IiwiZXhwIjoxNjgxMzQ3MTMwfQ.uC6xZxrxrrLBjloDwJ4cs3CPe5d3G2sy8WZWuhCoLIc"}
         }).then((result)=>{
           console.log(result);
-          carKind.value = result.data.carKind;
-          carMaking.value = result.data.carMaking;
-          carModel.value = result.data.carModel;
-          carGas.value = result.data.carGas;
-          carEff.value = result.data.carEff;
-          howmuch.value = result.data.distanceDto.howmuch;
+          carKind.value = result.data.car.carKind;
+          carMaking.value = result.data.car.carMaking;
+          carModel.value = result.data.car.carModel;
+          carGas.value = result.data.car.carGas;
+          carEff.value = result.data.car.carEff;
+          howmuch.value = result.data.car.distanceDto.howmuch;
+          id.value = result.data.user.id;
+          name.value = result.data.user.name;
         }).catch((result) => {
           console.log(result.response.status);
-          if(result.response.status==500){
-            alert("오류오류오류오류");
-          }
-          
+          alert("비정상적인 접근");
+          router.push("Main");
         }) 
       }
 
@@ -224,7 +222,9 @@ export default {
         carModel,
         carGas,
         carEff,
-        howmuch
+        howmuch,
+        id,
+        name
       }
     }
 }

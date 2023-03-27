@@ -39,6 +39,7 @@ import {ref} from 'vue'
 import axios from 'axios';
 export default {
     setup(){
+      const token = ref('');
       const id = ref('');
       const password = ref('');
       const login = () =>{
@@ -52,6 +53,11 @@ export default {
                             })
             .then((result)=>{
               console.log("success");
+              console.log(result.headers.token);
+              if(result.headers.token==null){
+                alert("로그인 실패");
+              }
+              token.value=result.headers.token;
           }).catch((result) =>{
             console.log(result);
           })
