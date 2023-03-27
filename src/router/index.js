@@ -21,7 +21,7 @@ const router = createRouter({
       component: Detail,
     },
     {
-      path: "/metaCar/profile",
+      path: "/metaCar/profile/:id",
       name: "Profile",
       component: Profile,
     },

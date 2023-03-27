@@ -18,14 +18,9 @@
                     <th style="width: 20%;">차번호</th>
                 </tr>
             </thead>
-
-
             <tbody>
-
                 <tr>
-
                 </tr>
-
                 <tr>
                     <td>
                         {{ id }}
@@ -42,34 +37,47 @@
                     <td>
                         {{ carnum }}
                     </td>
-
                 </tr>
-
             </tbody>
-
         </table>
-
     </div>
     <main style="width: 100%; height: 100%;">
         <div style="width: 1000px; height: 800%; margin: 0 auto;">
             <div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
                 <div class="col">
-                    <div class="card mb-4 rounded-3 shadow-sm">
+                    <div>
+                        <div>
+                            <button type="button" class="btn btn-primary" @click="toggleModal(true)">예약을 취소 하시겠습니까?</button>
 
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                            <div>
-                                <h5 class="my-0 fw-normal">예약을 취소 하시겠습니까?</h5>
+                            <div v-if="modal" class="modal-backdrop fade show" style="z-index: 1040;"></div>
+                            <div v-if="modal" class="modal fade show" tabindex="-1" role="dialog"
+                                style="display: block; z-index: 1041;">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">예약 취소</h5>
+                                            <button type="button" class="close" @click="toggleModal(false)">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>정말로 예약을 취소하시겠습니까?</p>
+                                            <textarea v-model="cancelwhy"></textarea>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                @click="toggleModal(false)">취소</button>
+                                            <button type="button" class="btn btn-primary"
+                                                @click="confirmCancelReservation">확인</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </button>
-                        <!-- <button type="button" class="btn btn-primary" onclick="cancelRes()">
-          <div>
-            <h5 class="my-0 fw-normal">예약을 취소 하시겠습니까?</h5>
-          </div>
-          </button> -->
+
+                        </div>
 
                     </div>
                 </div>
-
             </div>
 
             <h4 class="display-6 text-center mb-4">예약 취소 목록</h4>
@@ -86,13 +94,13 @@
                     <tr>
 
                         <td>
-                            1
+                            {{ reservenum }}
                         </td>
                         <td>
-                            2
+                            {{ cancelwhy }}
                         </td>
                         <td>
-                            3
+                            {{ canceldate }}
                         </td>
 
                     </tr>
@@ -100,28 +108,6 @@
 
             </table>
         </div>
-        <!-- Button trigger modal -->
-
-        <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <label>취소사유 <input id="cancelwhy" type="text" value="" /></label>
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-                        <button type="button" class="btn btn-primary" id="modify">취소하기</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </main>
 </template>
 
@@ -133,52 +119,91 @@ import { ref } from "vue";
 export default {
     setup() {
         const route = useRoute();
-        const reservenum = ref('');
-        const id = route.params.id;
+
+        const paramid = route.params.id;
+        const id = ref('');
         const rentaltime = ref('');
         const usetime = ref('');
         const returnadd = ref('');
-        const sczonenum = ref('');
         const carnum = ref('');
-        const reservenow = ref('');
-        const havecar = ref('');
 
-        const getCancel = async () => {
+        const reservenum = ref('');
+        const cancelwhy = ref('');
+        const canceldate = ref('');
 
-            const res = await axios.get(`/cancel/${id}`).then((carcancel) => {
+        const modal = ref(false);
+
+
+
+        const getRental = async () => {
+
+            const res = await axios.get(`/cancel/${paramid}`).then((carcancel) => {
                 console.log("start");
-                
-                reservenum.value = carcancel.data.rentalGet.reserveNum;
-                console.log(reservenum.value);
+                id.value = carcancel.data.rentalGet.id;
                 rentaltime.value = carcancel.data.rentalGet.reserveTime;
                 usetime.value = carcancel.data.rentalGet.useTime;
                 returnadd.value = carcancel.data.rentalGet.returnAdd;
-                sczonenum.value = carcancel.data.rentalGet.carNum;
                 carnum.value = carcancel.data.rentalGet.carNum;
-                reservenow.value = carcancel.data.rentalGet.reservenow;
-                havecar.value = carcancel.data.rentalGet.haveCar;
             })
-            
-        
-        
-    };
+        };
+        getRental();
+
+
+        const getCancel = async () => {
+
+            const res = await axios.get(`/cancel/${paramid}`).then((carcancel) => {
+                console.log("start");
+
+                reservenum.value = carcancel.data.cancel[0].reserveNum;
+                console.log(reservenum.value);
+                console.log(carcancel.data);
+                console.log(carcancel.data.cancel[0]);
+                cancelwhy.value = carcancel.data.cancel[0].cancelWhy;
+                canceldate.value = carcancel.data.cancel[0].cancelDate;
+            })
+        };
         getCancel();
 
+        const toggleModal = (value) => {
+            modal.value = value;
+        };
+
+        const confirmCancelReservation = async () => {
+            const data = {
+                id: paramid,
+                cancelWhy: cancelwhy.value
+            };
+            try {
+                await axios.post('/cancel', data);
+                alert('예약이 취소되었습니다.');
+
+                toggleModal(false);
+                location.reload();
+            } catch (error) {
+                // API 호출에 실패했을 때의 처리를 작성합니다.
+                console.error(error);
+            }
+        };
+
+
+
         return {
-            reservenum,
+            getRental,
+            getCancel,
+            paramid,
             id,
             rentaltime,
             usetime,
             returnadd,
-            sczonenum,
             carnum,
-            reservenow,
-            havecar,
-            getCancel,
+            reservenum,
+            cancelwhy,
+            canceldate,
+            confirmCancelReservation,
+            modal,
+            toggleModal,
         }
     }
-
-
 }
 </script>
 
