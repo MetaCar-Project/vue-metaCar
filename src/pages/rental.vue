@@ -4,7 +4,7 @@
     <div class="py-5 text-center">
       <img class="d-block mx-auto mb-4" src="/resources/img/${car.carModel}.jpg" alt="${car.carModel }" width="800" height="400">
       <h2>대여 신청</h2>
-      <p class="lead">차번호</p>
+      <p class="lead">{{carNum}}</p>
     </div>
 
     <div class="row g-5">
@@ -19,32 +19,32 @@
               <h6 class="my-0">모델명</h6>
               <small class="text-muted"></small>
             </div>
-            <span class="text-muted">모델명</span>
+            <span class="text-muted">{{carModel}}</span>
           </li>
           <li class="list-group-item d-flex justify-content-between lh-sm">
             <div>
               <h6 class="my-0">제조사</h6>
               <small class="text-muted"></small>
             </div>
-            <span class="text-muted">제조사</span>
+            <span class="text-muted">{{carMaking}}</span>
           </li>
           <li class="list-group-item d-flex justify-content-between lh-sm">
             <div>
               <h6 class="my-0">연료</h6>
               <small class="text-muted"></small>
             </div>
-            <span class="text-muted">연료</span>
+            <span class="text-muted">{{carGas}}</span>
           </li>
           <li class="list-group-item d-flex justify-content-between bg-light">
             <div class="text-success">
               <h6 class="my-0">연비</h6>
               <small></small>
             </div>
-            <span class="text-success">연비</span>
+            <span class="text-success">{{carEff}}</span>
           </li>
           <li class="list-group-item d-flex justify-content-between">
             <span>시간당 가격</span>
-            <strong id="money">가격만원</strong>
+            <strong id="money">{{howmuch}}만원</strong>
           </li>
         </ul>
 		<!-- 
@@ -69,7 +69,7 @@
               	<ul class="list-group mb-3">
           			<li class="list-group-item d-flex justify-content-between lh-sm">
             			<div>
-              				<h6 class="my-0">아이디</h6>
+              				<h6 class="my-0">{{id}}</h6>
               				<small class="text-muted"></small>
             			</div>
             		</li>
@@ -95,7 +95,7 @@
                 <ul class="list-group mb-3">
           			<li class="list-group-item d-flex justify-content-between lh-sm">
             			<div>
-              				<h6 class="my-0">이름</h6>
+              				<h6 class="my-0">{{name}}</h6>
               				<small class="text-muted"></small>
             			</div>
             		</li>
@@ -109,7 +109,7 @@
 
             <div class="col-12">
               <label for="email" class="form-label">반납주소</label>
-              <input type="text" class="form-control" id="address" placeholder="ex)경찰병원, 가락시장" required="required">
+              <input type="text" class="form-control" id="address" placeholder="ex)경찰병원, 가락시장" required="required" v-model="returnAdd">
               <div class="invalid-feedback">
                 Please enter a valid email address for shipping updates.
               </div>
@@ -119,7 +119,7 @@
 
             <div class="col-md-5">
               <label for="country" class="form-label">이용시간</label>
-              <select class="form-select" id="country" required>
+              <select class="form-select" id="country" v-model="time" @change="checkTime()">
                 <option value="">시간을 선택하세요</option>
                 <option value="1">1시간</option>
                 <option value="2">2시간</option>
@@ -139,7 +139,7 @@
               	<ul class="list-group mb-3">
           			<li class="list-group-item d-flex justify-content-between lh-sm">
             			<div>
-              				<h6 class="my-0" id="totalPrice"></h6>
+              				<h6 class="my-0" id="totalPrice" >{{ total }} 만원</h6>
               				<small class="text-muted"></small>
             			</div>
             		</li>
@@ -152,8 +152,8 @@
 			<div>
 				
 			</div>
-			
-          <button id="submitButton" class="w-100 btn btn-primary btn-lg" type="submit">예약하기</button>
+          
+          <button id="submitButton" class="w-100 btn btn-primary btn-lg" @click.prevent="reserve()">예약하기</button>
         </div>
         </form>
     </div>
@@ -172,9 +172,110 @@
 </template>
 
 <script>
-
+import axios from "axios";
+import { useRoute,useRouter } from "vue-router";
+import { ref } from "vue";
 export default {
-    
+    setup(){
+      //const token = route.headers.Authorization;
+      const route = useRoute();
+      const router = useRouter();
+      const carNum = route.params.carNum;
+      const sczoneNum = ref('');
+      const carKind = ref('');
+      const carMaking = ref('');
+      const carModel = ref('');
+      const carGas = ref('');
+      const carEff = ref('');
+      const howmuch = ref('');
+      const id = route.params.id;
+      const name= ref('');
+      const time= ref('');
+      const returnAdd = ref('');
+      const token = sessionStorage.getItem("token");
+      const total = ref('');
+      const checkTime = () =>{
+        total.value = time.value*howmuch.value;
+      } 
+
+      //예약
+      const reserve = () => {
+        console.log(time.value);
+        console.log(returnAdd.value);
+        if(time.value=="" || returnAdd.value==""){
+          alert("반납장소와 이용시간을 선택해주세요");
+          return;
+        }
+        const rental = async () =>{
+          const res = await axios
+            .post('/rental',{
+                              id : id,
+                              useTime : time.value,
+                              returnAdd : returnAdd.value,
+                              sczoneNum : sczoneNum.value,
+                              carNum : carNum
+                            },{headers : {Authorization : token}})
+            .then((result)=>{
+              console.log("success");
+              console.log(result);
+              if(result.status==201){
+                alert("예약이 완료되었습니다.");
+                router.push({
+                  name : "main"
+                });
+              }
+          }).catch((result) =>{
+            console.log(result);
+          })
+        }
+        rental();
+
+        
+      }
+      //처음들어왔을때
+      const getCar = async () =>{
+        const res = await axios.get(`/rental/${carNum}`,{
+          headers : {Authorization : token}
+        }).then((result)=>{
+          console.log(result);
+          carKind.value = result.data.car.carKind;
+          carMaking.value = result.data.car.carMaking;
+          carModel.value = result.data.car.carModel;
+          carGas.value = result.data.car.carGas;
+          carEff.value = result.data.car.carEff;
+          howmuch.value = result.data.car.distanceDto.howmuch;
+          name.value = result.data.user.name;
+          sczoneNum.value = result.data.car.sczoneNum;
+        }).catch((result) => {
+          console.log(result);
+          alert("비정상적인 접근");
+          
+        }) 
+      }
+      getCar();
+
+      
+
+
+
+      return {
+        carNum,
+        sczoneNum,
+        carKind,
+        carMaking,
+        carModel,
+        carGas,
+        carEff,
+        howmuch,
+        id,
+        name,
+        returnAdd,
+        time,
+        reserve,
+        total,
+        checkTime
+      }
+    }
 }
 </script>
 

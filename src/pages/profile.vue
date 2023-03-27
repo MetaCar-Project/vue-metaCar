@@ -15,19 +15,43 @@
                     </div>
                     <div class="card-body">
                         <h1 class="card-title pricing-card-title">
-                            한예찬
+                            {{ username }}
                         </h1>
                         <ul class="list-unstyled mt-3 mb-4">
-                            <li>ID : kosa00
-                            </li>
+                            <li>ID : {{ paramid }}</li>
 
-                            <li id="phoneNum">전화번호 : 010-1234-1234
+                            <li id="phoneNum"> 핸드폰 번호 : {{ phonenum }}
                             </li>
                         </ul>
 
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        <button type="button" class="btn btn-primary" @click="toggleModal(true)">
                             수정하기
                         </button>
+
+                        <div v-if="modal" class="modal-backdrop fade show" style="z-index: 1040;"></div>
+                            <div v-if="modal" class="modal fade show" tabindex="-1" role="dialog"
+                                style="display: block; z-index: 1041;">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">수정 하기</h5>
+                                            <button type="button" class="close" @click="toggleModal(false)">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>정말로 수정하시겠습니까?</p>
+                                            <textarea v-model="phonenum"></textarea>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                @click="toggleModal(false)">취소</button>
+                                            <button type="button" class="btn btn-primary"
+                                                @click="modifyuser">확인</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
                     </div>
                 </div>
@@ -42,10 +66,10 @@
                 <thead>
                     <tr>
 
-                        <th style="width: 22%;">대여장소</th>
+                        <th style="width: 22%;">주소</th>
                         <th style="width: 22%;">차 번호</th>
                         <th style="width: 22%;">차종</th>
-                        <th style="width: 22%;">시간</th>
+                        <th style="width: 22%;">사용 시간</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -53,36 +77,124 @@
 
 
                         <td>
-                            1
+                            {{ address }}
                         </td>
                         <td>
-                            2
+                            {{ carnum }}
                         </td>
                         <td>
-                            3
+                            {{ carmodel }}
                         </td>
                         <td>
-                            4
+                            {{ usetime }}
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        
-        <input type='button' class="btn btn-primary" value='예약취소목록' style="float: right;"
-            onclick="location.href='/metaCar/cancel/${user.id}'" />
+
+        <input type='button' class="btn btn-primary" value='예약취소목록' style="float: right;" @click="moveCancel" />
     </main>
 </template>
 
 <script>
-
+import { useRouter, useRoute } from 'vue-router';
+import { ref } from "vue";
+import axios from 'axios';
 
 export default {
-  
+
+    setup() {
+        const router = useRouter();
+        const route = useRoute();
+        const paramid = route.params.id;
+        const username = ref('');
+        const address = ref('');
+        const carnum = ref('');
+        const carmodel = ref('');
+        const usetime = ref('');
+        const phonenum = ref('');
+        const token = sessionStorage.getItem("token");
+        const modal = ref(false);
+
+        sessionStorage.setItem("token", token);
+
+        const moveCancel = function () {
+            router.push({
+                name: "Cancel",
+                params: { "id": paramid }
+            })
+        }
+        console.log("token : " + token);
+        const profile = async () => {
+
+            const res = await axios.get(`/profile/${paramid}`,
+                { headers: { Authorization: token } }
+            ).then((profile) => {
+                if (profile.data.rentalCar == null) {
+                    username.value = profile.data.name;
+                    phonenum.value = profile.data.phone;
+                }
+                else if (profile.data.rentalCar != null) {
+                    username.value = profile.data.name
+                    address.value = profile.data.rentalCar.haveCar.zoneCar.address;
+                    usetime.value = profile.data.rentalCar.useTime;
+                    phonenum.value = profile.data.phone;
+                    console.log(phonenum.value + '12312312312312');
+                    carnum.value = profile.data.rentalCar.haveCar.carNum;
+                    carmodel.value = profile.data.rentalCar.haveCar.carModel;
+                    console.log(phonenum.value + '12312312312312');
+                }
+
+            })
+                .catch((result) => {
+                    console.log(result);
+                })
+        };
+
+        profile();
+
+        const toggleModal = (value) => {
+            modal.value = value;
+            console.log(toggleModal);
+        };
+
+        const modifyuser = async () => {
+            const data = {
+                id : paramid,
+                phone : phonenum.value
+            };
+            try {
+                await axios.post(`/profile/${paramid}`, data, { headers: { Authorization: token } });
+                alert('수정되었습니다.');
+
+                toggleModal(false);
+                location.reload();
+            } catch (error) {
+                // API 호출에 실패했을 때의 처리를 작성합니다.
+                console.error(error);
+            }
+        };
+
+        return {
+            moveCancel,
+            username,
+            address,
+            usetime,
+            phonenum,
+            carnum,
+            carmodel,
+            paramid,
+            toggleModal,
+            modal,
+            modifyuser
+
+
+        }
+    }
 }
 </script>
 
 <style>
- @import "@/css/profile.css"; 
- 
+@import "@/css/profile.css";
 </style>
