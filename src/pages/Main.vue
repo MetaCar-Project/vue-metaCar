@@ -7,7 +7,6 @@
       </a>
       <hr />
       <form v-on:submit.prevent="submitForm" @click="checkValue">
-        <!-- <form id="searchForm" action="http://localhost:8082/metaCar/main" method="get"> -->
         <ul class="nav nav-pills flex-column mb-auto">
           <li>
             <div class="input-group mb-2">
@@ -84,18 +83,18 @@
           </li>
           <li>
             <div class="input-group mb-3">
-              <input v-model="keyword" type="text" name="keyword" style="width: 190px" placeholder="검색어를 입력하세요" />
+              <input v-model="keyword" type="text" name="keyword" style="width: 180px" placeholder="검색어를 입력하세요" />
+              <button type="submit" class="btn btn-primary">검색</button>
             </div>
-            <button type="submit" class="btn btn-primary">검색</button>
           </li>
         </ul>
-        <!-- <input v-model="" type="hidden" name="amount" value="${pageMaker.cri.amount}" />
-        <input v-model="" type="hidden" name="pageNum" value="${pageMaker.cri.pageNum}" /> -->
+        <input v-model="pageNum" type="hidden" name="pageNum" />
       </form>
       <hr />
     </div>
+
     <!-- CARD -->
-    <div class="album py-3 bg-light align-items-center justify-content-center" style="width: 72%; float: left">
+    <div class="album py-3 bg-light align-items-center justify-content-center" style="width: 70%; float: left">
       <div class="container w-100">
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
           <div class="col" v-for="(car, i) in car_axios" :key="i">
@@ -108,11 +107,11 @@
                 </p>
                 <div class="d-flex justify-content-between align-items-center">
                   <div class="btn-group">
-                    <div class="btn-group" v-if ="car.reserveNow == 'x'">
+                    <div class="btn-group" v-if="car.reserveNow == 'x'">
                       <button class="btn btn-outline-secondary" @click="car.detail">상세정보</button>
                       <button type="button" class="btn btn-outline-primary" @click="car.rental">대여하기</button>
                     </div>
-                    <div class="btn-group" v-if ="car.reserveNow == 'o'">
+                    <div class="btn-group" v-if="car.reserveNow == 'o'">
                       <button class="btn btn-outline-secondary" @click="car.detail">상세정보</button>
                       <small class="text-muted">대여불가능</small>
                     </div>
@@ -127,7 +126,7 @@
     <!-- CARD END-->
 
     <!-- 사이드바 -->
-    <div class="d-flex flex-column flex-shrink-0 text-bg-dark" style="width: 280px; float: right">
+       <div class="d-flex flex-column flex-shrink-0 text-bg-dark" style="width: 280px; float: right">
       <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
         <use xlink:href="metaCar/main"></use>
         <span class="fs-4" style="text-align: center">예약된 차 확인</span>
@@ -163,27 +162,22 @@
     </div>
     <!-- 사이드바 -->
 
+    <!-- 페이징 -->
     <div class="pull-right" style="clear: both; text-align: center">
-      <ul style="text-align: center">
-        <!-- <c:if test="${pageMaker.prev }"> -->
-        <li style="display: inline-block; text-decoration-line: none" class="paginate_button previous">
-          <a href="${pageMaker.startPage -1 }">Previous</a>
-        </li>
-        <!-- </c:if>
-        <c:forEach var="num" begin="${pageMaker.startPage }" end="${pageMaker.endPage }"> -->
-        <!-- <li style="display: inline-block;" class="paginate_button ${pageMaker.cri.pageNum == num ? "active":"" } "> -->
-        <li style="display: inline-block" class="paginate_button">
-          <a style="margin-left: 4px" class="btn btn-outline-primary" href="${num }">${num }</a>
-        </li>
-        <!-- </c:forEach>
-        <c:if test="${pageMaker.next }"> -->
-        <li style="display: inline-block; text-decoration-line: none" class="paginate_button next">
-          <a href="${pageMaker.endPage +1 }">Next</a>
-        </li>
-        <!-- </c:if> -->
-      </ul>
-    </div>
+          <ul style="text-align: center">
+            <li v-if="curPage >= 2" style="display: inline-block; text-decoration-line: none" class="paginate_button prev">
+              <a style="margin-left: 4px" class="btn btn-outline-primary" @click="curPage--">prev</a>
+            </li>
 
+            <li v-for="num in pageList" :key="num" style="display: inline-block" class="paginate_button">
+              <a style="margin-left: 4px" class="btn btn-outline-primary" @click="curPage = num">{{ num }}</a>
+            </li>
+            <li v-if="curPage < total / 6" style="display: inline-block; text-decoration-line: none" class="paginate_button next">
+              <a style="margin-left: 4px" class="btn btn-outline-primary" @click="curPage++">next</a>
+            </li>
+          </ul>
+    </div>
+    <!-- 페이징 -->
   </div>
 </template>
 
@@ -212,6 +206,7 @@ export default {
 
     let timeout = null;
     const getUrl = ref("");
+    const id = ref("");
 
     const getCarList = async () => {
       error.value = "";
@@ -231,7 +226,13 @@ export default {
               );
             };
             car_axios.value[i].rental = function () {
-              location.href = "/metaCar/rental?carNum=" + car_axios.value[i].carNum;
+              if(id.value == ''){
+                console.log(id.value+'id.value');
+                alert('로그인해주세요');
+                location.href = "/metaCar/main";
+              }else{
+              location.href = "/metaCar/rental/id/"+id.value+"/carNum/"+car_axios.value[i].carNum;
+              }
             };
           }
         });
@@ -288,7 +289,7 @@ export default {
       },);
     });
     // getCarList();
-    return { getCarList, car_axios, submitForm, checkValue, carSmall, carMiddle, carBig, carSUV, keyword, zoneType,};
+    return { getCarList, car_axios, submitForm, checkValue, carSmall, carMiddle, carBig, carSUV, keyword, zoneType};
   },
 };
 </script>

@@ -13,13 +13,16 @@
       </ul>
   
       <div class="col-md-3 text-end">
+        
         <router-link to="/metaCar/login">
           <button type="button" class="btn btn-outline-primary me-2">Login</button>
         </router-link>
-        
         <router-link to="/metaCar/signup">
-        <button type="button" class="btn btn-primary">Sign-up</button>
-      </router-link>
+          <button type="button" class="btn btn-primary">Sign-up</button>
+        </router-link>
+        <router-link to="/metaCar/main">
+          <button type="button" class="btn btn-primary">Home</button>
+        </router-link>
       </div>
     </header>
 </template>
