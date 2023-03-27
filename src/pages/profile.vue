@@ -15,13 +15,12 @@
                     </div>
                     <div class="card-body">
                         <h1 class="card-title pricing-card-title">
-                            한예찬
+                            {{ username }}
                         </h1>
                         <ul class="list-unstyled mt-3 mb-4">
-                            <li>ID : kosa00
-                            </li>
+                            <li>ID : {{ paramid }}</li>
 
-                            <li id="phoneNum">전화번호 : 010-1234-1234
+                            <li id="phoneNum"> 핸드폰 번호 : {{ phonnum }}
                             </li>
                         </ul>
 
@@ -42,10 +41,10 @@
                 <thead>
                     <tr>
 
-                        <th style="width: 22%;">대여장소</th>
+                        <th style="width: 22%;">주소</th>
                         <th style="width: 22%;">차 번호</th>
                         <th style="width: 22%;">차종</th>
-                        <th style="width: 22%;">시간</th>
+                        <th style="width: 22%;">사용 시간</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -53,56 +52,88 @@
 
 
                         <td>
-                            1
+                            {{ address }}
                         </td>
                         <td>
-                            2
+                            {{ carnum }}
                         </td>
                         <td>
-                            3
+                            {{ carmodel }}
                         </td>
                         <td>
-                            4
+                            {{ usetime }}
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        
-        <input type='button' class="btn btn-primary" value='예약취소목록' style="float: right;"
-        @click="moveCancel"/>
+
+        <input type='button' class="btn btn-primary" value='예약취소목록' style="float: right;" @click="moveCancel" />
     </main>
 </template>
 
 <script>
-import { useRouter,useRoute } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
+import { ref } from "vue";
+import axios from 'axios';
 
 export default {
-  
-    setup(){
+
+    setup() {
         const router = useRouter();
         const route = useRoute();
-        const id = route.params.id;
-        // const rentaladd = ref('');
-        // const carnum = ref('');
-        // const carmodel = ref('');
-        // const usetime = ref('');
+        const paramid = route.params.id;
+        const username = ref('');
+        const address = ref('');
+        const carnum = ref('');
+        const carmodel = ref('');
+        const usetime = ref('');
+        const phonnum = ref('');
 
-        const moveCancel = function(){
+        const moveCancel = function () {
             router.push({
-                name : "Cancel",
-                params : {"id": id }
+                name: "Cancel",
+                params: { "id": paramid }
             })
         }
 
-        return{
-            moveCancel
+        const profile = async () => {
+
+            const res = await axios.get(`/profile/${paramid}`,
+                {headers: { Authorization: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyZjI0MjE1YS1jMGM3LTQ5YTUtOTk1Yi1jNzI3NDc1YmEyNmEiLCJleHAiOjE2Nzk2NDIxNTN9.v2B0e-vl6hq12UOLQOXenlLWJiJABYajFNh7mx4KarU" }}
+                    ).then((profile) => {
+                    console.log("start");
+                    console.log(profile);
+                    username.value = profile.data.name
+                    address.value = profile.data.rentalCar.haveCar.zoneCar.address;
+                    usetime.value = profile.data.rentalCar.useTime;
+                    phonnum.value = profile.data.phone;
+                    carnum.value = profile.data.rentalCar.haveCar.carNum;
+                    carmodel.value = profile.data.rentalCar.haveCar.carModel;
+                })
+                .catch((result) => {
+                    console.log(result);
+                })
+        };
+
+        profile();
+
+        return {
+            moveCancel,
+            username,
+            address,
+            usetime,
+            phonnum,
+            carnum,
+            carmodel,
+            paramid
+
+
         }
     }
 }
 </script>
 
 <style>
- @import "@/css/profile.css"; 
- 
+@import "@/css/profile.css";
 </style>
