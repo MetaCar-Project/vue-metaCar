@@ -183,7 +183,7 @@
 
 <script>
 import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
+
 import Axios from "axios";
 
 import { useRouter } from 'vue-router';
@@ -201,7 +201,17 @@ export default {
     const carMiddle = ref("");
     const carBig = ref("");
     const carSUV = ref("");
-
+	const id = sessionStorage.getItem("id");
+	const checkid = () =>{
+	if(id == null){
+		console.log("아이디 없음");
+	}
+	else{
+		console.log(id);
+	}
+	}
+	checkid();
+checkid();
     const zoneType = ref(0);
     const keyword = ref("");
 
@@ -226,7 +236,7 @@ export default {
               );
             };
             car_axios.value[i].rental = function () {
-              location.href = "/metaCar/rental?carNum=" + car_axios.value[i].carNum;
+              location.href = "/metaCar/rental/" +id + "/" +  car_axios.value[i].carNum;
             };
           }
         });
@@ -260,7 +270,8 @@ export default {
               );
             };
             car_axios.value[i].rental = function () {
-              location.href = "/metaCar/rental?carNum=" + car_axios.value[i].carNum;
+              location.href = "/metaCar/rental/carNum=" + car_axios.value[i].carNum;
+			  console.log("click");
             };
             console.log(car_axios.value[i].imgSrc);
             console.log(car_axios.value[i].detail);
@@ -283,6 +294,12 @@ export default {
       },);
     });
     // getCarList();
+
+
+
+
+
+
     return { getCarList, car_axios, submitForm, checkValue, carSmall, carMiddle, carBig, carSUV, keyword, zoneType,};
   },
 };

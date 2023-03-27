@@ -57,6 +57,7 @@ export default {
               console.log("success");
               console.log(result.headers.token);
               sessionStorage.setItem("token",result.headers.token);
+              sessionStorage.setItem("id",id.value);
               alert('로그인 성공');
               router.push({ name : 'main', params : {id : id.value}});
               if(result.headers.token==null){
