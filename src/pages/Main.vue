@@ -134,15 +134,13 @@
       </a>
       <hr />
       <div>
-        <div v-if="rental_id == ''">나는 비로그인</div>
+        <div v-if="1 > 0">
+          <!-- test="{{empty user_id}}"> -->
           <img src="@/assets/unx.jpg" style="width: 100%; height: 225px" />
         </div>
-        <!--
-        <div v-if="rental_id">나는 로그인</div>
-          <img src="@/assets/unx.jpg" style="width: 100%; height: 225px" />
-        </div>
-        -->
+        <div v-else>123</div>
       </div>
+
       <hr />
       <ul class="nav nav-pills flex-column mb-auto">
         <li>
@@ -150,13 +148,21 @@
             <svg class="bi pe-none me-2" width="16" height="16">
               <use xlink:href=""></use>
             </svg>
+            <!-- <sec:authorize access="isAnonymous()"> -->
+            <!-- 로그인 안 한 익명일 경우 -->
+            <!-- 로그인 후 이용가능
+          </sec:authorize>
+          <sec:authorize access="isAuthenticated()"> -->
+            <!-- 로그인(인증된) 사용자인 경우 -->
             <span id="textbox">대여한 차량이 없습니다.</span>
-            <!-- <input type="hidden" name="rental_id" value="" /> -->
+            <!-- </sec:authorize> -->
+            <input type="hidden" name="rental_id" value="" />
           </a>
         </li>
       </ul>
-
+    </div>
     <!-- 사이드바 -->
+
     <div class="pull-right" style="clear: both; text-align: center">
       <ul style="text-align: center">
         <!-- <c:if test="${pageMaker.prev }"> -->
@@ -183,7 +189,6 @@
 
 <script>
 import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
 import Axios from "axios";
 
 import { useRouter } from 'vue-router';
