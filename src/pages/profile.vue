@@ -89,27 +89,34 @@ export default {
         const carmodel = ref('');
         const usetime = ref('');
         const phonnum = ref('');
-
+        const token = sessionStorage.getItem("token");
         const moveCancel = function () {
             router.push({
                 name: "Cancel",
                 params: { "id": paramid }
             })
         }
-
+        console.log("token : " + token);
         const profile = async () => {
 
             const res = await axios.get(`/profile/${paramid}`,
-                {headers: { Authorization: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyZjI0MjE1YS1jMGM3LTQ5YTUtOTk1Yi1jNzI3NDc1YmEyNmEiLCJleHAiOjE2Nzk2NDIxNTN9.v2B0e-vl6hq12UOLQOXenlLWJiJABYajFNh7mx4KarU" }}
+                {headers: { Authorization: token }}
                     ).then((profile) => {
-                    console.log("start");
-                    console.log(profile);
-                    username.value = profile.data.name
-                    address.value = profile.data.rentalCar.haveCar.zoneCar.address;
-                    usetime.value = profile.data.rentalCar.useTime;
-                    phonnum.value = profile.data.phone;
-                    carnum.value = profile.data.rentalCar.haveCar.carNum;
-                    carmodel.value = profile.data.rentalCar.haveCar.carModel;
+                    if(profile.data.rentalCar==null){
+                        username.value = profile.data.name;
+                        phonnum.value = profile.data.phone;
+                    }
+                    else if(profile.data.rentalCar!=null){
+                        username.value = profile.data.name
+                        address.value = profile.data.rentalCar.haveCar.zoneCar.address;
+                        usetime.value = profile.data.rentalCar.useTime;
+                        phonnum.value = profile.data.phone;
+                        console.log(phonnum.value + '12312312312312');
+                        carnum.value = profile.data.rentalCar.haveCar.carNum;
+                        carmodel.value = profile.data.rentalCar.haveCar.carModel;
+                        console.log(phonnum.value + '12312312312312');
+                    }
+                    
                 })
                 .catch((result) => {
                     console.log(result);
