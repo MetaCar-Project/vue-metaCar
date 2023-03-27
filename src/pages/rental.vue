@@ -109,7 +109,7 @@
 
             <div class="col-12">
               <label for="email" class="form-label">반납주소</label>
-              <input type="text" class="form-control" id="address" placeholder="ex)경찰병원, 가락시장" required="required">
+              <input type="text" class="form-control" id="address" placeholder="ex)경찰병원, 가락시장" required="required" v-model="returnAdd">
               <div class="invalid-feedback">
                 Please enter a valid email address for shipping updates.
               </div>
@@ -119,7 +119,7 @@
 
             <div class="col-md-5">
               <label for="country" class="form-label">이용시간</label>
-              <select class="form-select" id="country" required>
+              <select class="form-select" id="country" v-model="time">
                 <option value="">시간을 선택하세요</option>
                 <option value="1">1시간</option>
                 <option value="2">2시간</option>
@@ -152,8 +152,8 @@
 			<div>
 				
 			</div>
-			
-          <button id="submitButton" class="w-100 btn btn-primary btn-lg" type="submit">예약하기</button>
+          
+          <button id="submitButton" class="w-100 btn btn-primary btn-lg" @click.prevent="reserve()">예약하기</button>
         </div>
         </form>
     </div>
@@ -180,7 +180,7 @@ export default {
       //const token = route.headers.Authorization;
       const route = useRoute();
       const router = useRouter();
-      const carNum = "321루7449";
+      const carNum = route.params.carNum;
       const scZoneNum = ref('');
       const carKind = ref('');
       const carMaking = ref('');
@@ -190,6 +190,37 @@ export default {
       const howmuch = ref('');
       const id = ref('');
       const name= ref('');
+      const time= ref('');
+      const returnAdd = ref('');
+
+
+      const reserve = () => {
+        console.log(time.value);
+        console.log(returnAdd.value);
+        if(time.value=="" || returnAdd.value==""){
+          alert("반납장소와 이용시간을 선택해주세요");
+          return;
+        }
+        const rental = async () =>{
+          const res = await axios
+            .post('/rental',{
+                              id : id.value,
+                              useTime : time.value,
+                              returnAdd : returnAdd.value,
+                              sczoneNum : scZoneNum.value,
+                              carNum : carNum
+                            },{headers : {Authorization : "eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJzdWIiOiJwMjEzNTY2IiwiZXhwIjoxNjgxMzQ3MTMwfQ.uC6xZxrxrrLBjloDwJ4cs3CPe5d3G2sy8WZWuhCoLIc"}})
+            .then((result)=>{
+              console.log("success");
+              console.log(result.response.status);
+          }).catch((result) =>{
+            console.log(result);
+          })
+        }
+        rental();
+
+        
+      }
 
       const getCar = async () =>{
         const res = await axios.get(`/rental/${carNum}`,{
@@ -210,8 +241,10 @@ export default {
           router.push("Main");
         }) 
       }
-
       getCar();
+
+      
+
 
 
       return {
@@ -224,7 +257,10 @@ export default {
         carEff,
         howmuch,
         id,
-        name
+        name,
+        returnAdd,
+        time,
+        reserve
       }
     }
 }
