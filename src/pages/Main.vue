@@ -272,7 +272,6 @@ export default {
     };
 
     submitForm.value = async () => {
-      alert(getUrl.value);
 
       Axios.get([getUrl.value])
         .then((res) => {
@@ -331,6 +330,20 @@ export default {
       next,
       pageList,
     };
+  },
+   watch: {
+    curPage(oldPage, newPage) {
+      for (let i = this.curPage.value; i < this.total / 6; i++) {
+        this.pageList.value.push(i);
+        console.log(this.pageList.value);
+      }
+      this.timeout = setTimeout(() => {
+        this.checkValue();
+      }, 30);
+      this.timeout = setTimeout(() => {
+        this.submitForm();
+      }, 60);
+    },
   },
 };
 </script>
