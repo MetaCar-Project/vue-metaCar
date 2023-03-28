@@ -7,20 +7,21 @@
 
 <script>
 import axios from "axios";
-import { useRoute } from "vue-router";
+
 export default {
 
     setup() {
-        const route = useRoute();
-        const paramid = route.params.id;
-
+        const paramid = sessionStorage.getItem("id");
+        const token = sessionStorage.getItem("token");
         const returnCar = async () => {
 
             const data = {
                 id: paramid,
             };
             try {
-                await axios.post('/return', data);
+                await axios.post('/return', data, {headers:{Authorization : token
+            
+                }});
                 alert('반납이 완료되었습니다.');
                 location.reload();
             } catch (error) {
@@ -29,7 +30,6 @@ export default {
             }
 
         };
-        returnCar();
 
 
         return {

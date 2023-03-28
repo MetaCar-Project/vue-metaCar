@@ -47,6 +47,7 @@
       <router-link to="/metaCar/login">
         <button type="button" class="btn btn-outline-primary me-2" v-if="headerstate">Login</button>
         <button type="button" class="btn btn-outline-primary me-2" v-if="!headerstate" @click.prevent="logout()">LogOut</button>
+        <button type="button" class="btn btn-outline-primary me-2" v-if="!headerstate" @click.prevent="profile()">내 정보</button>
       </router-link>
 
       <router-link to="/metaCar/signup">
@@ -59,6 +60,7 @@
 
 <script>
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 export default {
   setup() {
     const headerstate = ref(false);
@@ -81,9 +83,22 @@ export default {
       sessionStorage.clear();
       location.reload();
     }
+
+    const router = useRouter();
+    
+    const sessionid = sessionStorage.getItem("id");
+
+    const profile = () => {
+          router.push({
+              name: "Profile",
+              params:{"id" : sessionid}
+          });
+        }
+
     return {
       logout,
-      headerstate
+      headerstate,
+      profile
     }
     }
 
