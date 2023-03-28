@@ -133,11 +133,15 @@
       </a>
       <hr />
       <div>
-        <div v-if="1 > 0">
-          <!-- test="{{empty user_id}}"> -->
+        <div v-if="user_id == ''">
           <img src="@/assets/unx.jpg" style="width: 100%; height: 225px" />
         </div>
-        <div v-else>123</div>
+        <div v-if="user_id == user_id && rental_id == ''">
+          <img src="@/assets/unx.jpg" style="width: 100%; height: 225px" />
+        </div>
+        <div v-if="user_id == user_id && rental_id == rental_id">
+          <img src="@/assets/jpg" style="width: 100%; height: 225px" />
+        </div>
       </div>
 
       <hr />
@@ -231,7 +235,7 @@ export default {
                 alert('로그인해주세요');
                 location.href = "/metaCar/main";
               }else{
-              location.href = "/metaCar/rental/id/"+id.value+"/carNum/"+car_axios.value[i].carNum;
+                location.href = "/metaCar/rental/id/"+id.value+"/carNum/"+car_axios.value[i].carNum;
               }
             };
           }
