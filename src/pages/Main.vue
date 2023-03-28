@@ -133,55 +133,46 @@
       </a>
       <hr />
       <div>
-        <div v-if="user_id == ''">
-          <img src="@/assets/unx.jpg" style="width: 100%; height: 225px" />
-        </div>
-        <div v-if="user_id == user_id && rental_id == ''">
-          <img src="@/assets/unx.jpg" style="width: 100%; height: 225px" />
-        </div>
-        <div v-if="user_id == user_id && rental_id == rental_id">
-          <img src="@/assets/jpg" style="width: 100%; height: 225px" />
-        </div>
+        <div v-if="rental_id == ''">나는 비로그인</div>
+        <img src="@/assets/unx.jpg" style="width: 100%; height: 225px" />
       </div>
-
-      <hr />
-      <ul class="nav nav-pills flex-column mb-auto">
-        <li>
-          <a class="nav-link text-white">
-            <svg class="bi pe-none me-2" width="16" height="16">
-              <use xlink:href=""></use>
-            </svg>
-            <!-- <sec:authorize access="isAnonymous()"> -->
-            <!-- 로그인 안 한 익명일 경우 -->
-            <!-- 로그인 후 이용가능
-          </sec:authorize>
-          <sec:authorize access="isAuthenticated()"> -->
-            <!-- 로그인(인증된) 사용자인 경우 -->
-            <span id="textbox">대여한 차량이 없습니다.</span>
-            <!-- </sec:authorize> -->
-            <input type="hidden" name="rental_id" value="" />
-          </a>
-        </li>
-      </ul>
+      <!--
+        <div v-if="rental_id">나는 로그인</div>
+          <img src="@/assets/unx.jpg" style="width: 100%; height: 225px" />
+        </div>
+        -->
     </div>
+    <hr />
+    <ul class="nav nav-pills flex-column mb-auto">
+      <li>
+        <a class="nav-link text-white">
+          <svg class="bi pe-none me-2" width="16" height="16">
+            <use xlink:href=""></use>
+          </svg>
+          <span id="textbox">대여한 차량이 없습니다.</span>
+          <!-- <input type="hidden" name="rental_id" value="" /> -->
+        </a>
+      </li>
+    </ul>
+
     <!-- 사이드바 -->
 
     <!-- 페이징 -->
     <div class="pull-right" style="clear: both; text-align: center">
-          <ul style="text-align: center">
-            <li v-if="curPage >= 2" style="display: inline-block; text-decoration-line: none" class="paginate_button prev">
-              <a style="margin-left: 4px" class="btn btn-outline-primary" @click="curPage--">prev</a>
-            </li>
+      <ul style="text-align: center">
+        <li v-if="curPage >= 2" style="display: inline-block; text-decoration-line: none" class="paginate_button prev">
+          <a style="margin-left: 4px" class="btn btn-outline-primary" @click="curPage--">prev</a>
+        </li>
 
-            <li v-for="num in pageList" :key="num" style="display: inline-block" class="paginate_button">
-              <a style="margin-left: 4px" class="btn btn-outline-primary" @click="curPage = num">{{ num }}</a>
-            </li>
-            <li v-if="curPage < total / 6" style="display: inline-block; text-decoration-line: none" class="paginate_button next">
-              <a style="margin-left: 4px" class="btn btn-outline-primary" @click="curPage++">next</a>
-            </li>
-          </ul>
+        <li v-for="num in pageList" :key="num" style="display: inline-block" class="paginate_button">
+          <a style="margin-left: 4px" class="btn btn-outline-primary" @click="curPage = num">{{ num }}</a>
+        </li>
+
+        <li v-if="curPage < total / 6" style="display: inline-block; text-decoration-line: none" class="paginate_button next">
+          <a style="margin-left: 4px" class="btn btn-outline-primary" @click="curPage++">next</a>
+        </li>
+      </ul>
     </div>
-    <!-- 페이징 -->
   </div>
 </template>
 
@@ -189,28 +180,72 @@
 import { ref, onMounted } from "vue";
 import Axios from "axios";
 
-import { useRouter } from 'vue-router';
-import CarReturnButtonvue from '@/components/CarReturnButton.vue';
+import { useRouter } from "vue-router";
+import CarReturnButtonvue from "@/components/CarReturnButton.vue";
 export default {
   setup() {
     const router = useRouter();
     const error = ref("");
-    const car_axios = ref([]);
+    const car_axios = ref([]); // Axios 객체 저장
+    const page_axios = ref([]);
 
-    const submitForm = ref();
-    const checkValue = ref();
+    //Function
+    const submitForm = ref(); //검색 버튼 클릭
+    const checkValue = ref(); //검색 조건
+    const checkPage = ref(); //페이지 체크
 
-    const carSmall = ref("");
-    const carMiddle = ref("");
-    const carBig = ref("");
-    const carSUV = ref("");
+    //Search
+    const carSmall = ref(""); //경차
+    const carMiddle = ref(""); //중형
+    const carBig = ref(""); //대형
+    const carSUV = ref(""); //SUV
 
-    const zoneType = ref(0);
-    const keyword = ref("");
+    const zoneType = ref(0); // 소카존
+    const keyword = ref(""); // 검색 키워드
 
     let timeout = null;
-    const getUrl = ref("");
-    const id = ref("");
+    const getUrl = ref(""); //요청 Get URL
+
+    const amount = ref(6); //페이지양
+    const pageNum = ref(-1);
+    const total = ref(0);
+    const curPage = ref(1); //현재 페이지
+    const startPage = ref(0);
+    const endPage = ref(0);
+    const prev = ref(false);
+    const next = ref(false);
+    const pageList = ref([]);
+
+    const id = sessionStorage.getItem("id");
+    const checkid = () => {
+      if (id == null) {
+        console.log("아이디 없음");
+      } else {
+        console.log(id);
+      }
+    };
+    checkid();
+    checkid();
+
+    const getPageInfo = async () => {
+      Axios.get("http://localhost:8081/metaCar/page")
+        .then((res) => {
+          page_axios.value = res.data;
+        })
+        .then(() => {
+          total.value = page_axios.value.total;
+          startPage.value = page_axios.value.startPage;
+          endPage.value = page_axios.value.endPage;
+          prev.value = page_axios.value.prev;
+          next.value = page_axios.value.next;
+        })
+        .then(() => {
+          let cnt = 0;
+          console.log(curPage.value);
+          console.log(endPage.value);
+          console.log(total.value);
+        });
+    };
 
     const getCarList = async () => {
       error.value = "";
@@ -223,20 +258,10 @@ export default {
             car_axios.value[i].imgSrc = require("@/assets/" + car_axios.value[i].carModel + ".jpg");
             car_axios.value[i].detail = function () {
               // Axios.get(`http://localhost:8081/metaCar/detail/${car_axios.value[i].carNum}`)
-              window.open(
-                'detail/'+ car_axios.value[i].carNum,
-                '차량상세정보',
-                'width=500px,height=800px,location=no,status=no,scrollbars=yes'
-              );
+              window.open("detail/" + car_axios.value[i].carNum, "차량상세정보", "width=500px,height=800px,location=no,status=no,scrollbars=yes");
             };
             car_axios.value[i].rental = function () {
-              if(id.value == ''){
-                console.log(id.value+'id.value');
-                alert('로그인해주세요');
-                location.href = "/metaCar/main";
-              }else{
-                location.href = "/metaCar/rental/id/"+id.value+"/carNum/"+car_axios.value[i].carNum;
-              }
+              location.href = "/metaCar/rental/" + id + "/" + car_axios.value[i].carNum;
             };
           }
         });
@@ -249,7 +274,8 @@ export default {
       if (carBig.value === true) getUrl.value += "carBig=대형&";
       if (carSUV.value === true) getUrl.value += "carSUV=suv&";
       getUrl.value += "zoneType=" + zoneType.value + "&";
-      getUrl.value += "keyword=" + keyword.value;
+      getUrl.value += "keyword=" + keyword.value + "&";
+      getUrl.value += "pageNum=" + curPage.value;
     };
 
     submitForm.value = async () => {
@@ -263,14 +289,11 @@ export default {
           for (let i = 0; i < car_axios.value.length; i++) {
             car_axios.value[i].imgSrc = require("@/assets/" + car_axios.value[i].carModel + ".jpg");
             car_axios.value[i].detail = function () {
-              window.open(
-                "'detail?carNum=" + car_axios.value[i].carNum + "'",
-                "차량상세정보",
-                "width=620px,height=800px,location=no,status=no,scrollbars=yes"
-              );
+              window.open("'detail?carNum=" + car_axios.value[i].carNum + "'", "차량상세정보", "width=620px,height=800px,location=no,status=no,scrollbars=yes");
             };
             car_axios.value[i].rental = function () {
-              location.href = "/metaCar/rental?carNum=" + car_axios.value[i].carNum;
+              location.href = "/metaCar/rental/carNum=" + car_axios.value[i].carNum;
+              console.log("click");
             };
             console.log(car_axios.value[i].imgSrc);
             console.log(car_axios.value[i].detail);
@@ -289,14 +312,34 @@ export default {
     };
     onMounted(() => {
       timeout = setTimeout(() => {
+        getPageInfo();
         getCarList();
-      },);
+      });
     });
-    // getCarList();
-    return { getCarList, car_axios, submitForm, checkValue, carSmall, carMiddle, carBig, carSUV, keyword, zoneType};
+
+    return {
+      getCarList,
+      car_axios,
+      submitForm,
+      checkValue,
+      carSmall,
+      carMiddle,
+      carBig,
+      carSUV,
+      keyword,
+      zoneType,
+      amount,
+      pageNum,
+      total,
+      curPage,
+      startPage,
+      endPage,
+      prev,
+      next,
+      pageList,
+    };
   },
 };
 </script>
 
-<style>
-</style>
+<style></style>

@@ -2,7 +2,7 @@
   <!-- <div class="container"> -->
     <main>
     <div class="py-5 text-center">
-      <img class="d-block mx-auto mb-4" src="/resources/img/${car.carModel}.jpg" alt="${car.carModel }" width="800" height="400">
+      <img class="d-block mx-auto mb-4" :src="src" alt="carModel" width="800" height="400">
       <h2>대여 신청</h2>
       <p class="lead">{{carNum}}</p>
     </div>
@@ -197,7 +197,8 @@ export default {
       const checkTime = () =>{
         total.value = time.value*howmuch.value;
       } 
-
+      const src = ref('');
+      
       //예약
       const reserve = () => {
         console.log(time.value);
@@ -246,6 +247,8 @@ export default {
           howmuch.value = result.data.car.distanceDto.howmuch;
           name.value = result.data.user.name;
           sczoneNum.value = result.data.car.sczoneNum;
+          src.value = require("@/assets/" + carModel.value + ".jpg");
+          // console.log(src.value);
         }).catch((result) => {
           console.log(result);
           alert("비정상적인 접근");
@@ -253,7 +256,8 @@ export default {
         }) 
       }
       getCar();
-
+      console.log('------------------');
+      console.log(src.value);
       
 
 
@@ -273,7 +277,8 @@ export default {
         time,
         reserve,
         total,
-        checkTime
+        checkTime,
+        src
       }
     }
 }
