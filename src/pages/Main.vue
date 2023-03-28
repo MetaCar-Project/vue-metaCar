@@ -227,7 +227,7 @@ export default {
     checkid();
 
     const getPageInfo = async () => {
-      Axios.get("http://localhost:8081/metaCar/page")
+      Axios.get("http://localhost:8082/metaCar/page")
         .then((res) => {
           page_axios.value = res.data;
         })
@@ -240,15 +240,15 @@ export default {
         })
         .then(() => {
           let cnt = 0;
-          console.log(curPage.value);
-          console.log(endPage.value);
-          console.log(total.value);
+          // console.log(curPage.value);
+          // console.log(endPage.value);
+          // console.log(total.value);
         });
     };
 
     const getCarList = async () => {
       error.value = "";
-      Axios.get("http://localhost:8081/metaCar/main")
+      Axios.get("http://localhost:8082/metaCar/main")
         .then((res) => {
           car_axios.value = res.data;
         })
@@ -256,7 +256,6 @@ export default {
           for (let i = 0; i < car_axios.value.length; i++) {
             car_axios.value[i].imgSrc = require("@/assets/" + car_axios.value[i].carModel + ".jpg");
             car_axios.value[i].detail = function () {
-              // Axios.get(`http://localhost:8081/metaCar/detail/${car_axios.value[i].carNum}`)
               window.open("detail/" + car_axios.value[i].carNum, "차량상세정보", "width=500px,height=800px,location=no,status=no,scrollbars=yes");
             };
             car_axios.value[i].rental = function () {
@@ -267,7 +266,7 @@ export default {
     };
 
     checkValue.value = () => {
-      getUrl.value = "http://localhost:8081/metaCar/main?";
+      getUrl.value = "http://localhost:8082/metaCar/main?";
       if (carSmall.value === true) getUrl.value += "carSmall=경차&";
       if (carMiddle.value === true) getUrl.value += "carMiddle=중형&";
       if (carBig.value === true) getUrl.value += "carBig=대형&";
@@ -278,8 +277,6 @@ export default {
     };
 
     submitForm.value = async () => {
-      alert(getUrl.value);
-
       Axios.get([getUrl.value])
         .then((res) => {
           car_axios.value = res.data;
@@ -297,6 +294,7 @@ export default {
             console.log(car_axios.value[i].imgSrc);
             console.log(car_axios.value[i].detail);
             console.log("'detail?carNum=" + car_axios.value[i].carNum + "','차량상세정보','width=620px,height=800px,location=no,status=no,scrollbars=yes'");
+            getPageInfo();
           }
         })
         .catch((error) => {
@@ -337,6 +335,22 @@ export default {
       next,
       pageList,
     };
+  },
+  watch: {
+    curPage(oldPage, newPage) {
+      for (let i = this.curPage.value; i < this.total / 6; i++) {
+        this.pageList.value.push(i);
+        console.log(this.pageList.value);
+      }
+
+      this.timeout = setTimeout(() => {
+        this.checkValue();
+      }, 30);
+
+      this.timeout = setTimeout(() => {
+        this.submitForm();
+      }, 60);
+    },
   },
 };
 </script>
