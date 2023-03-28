@@ -23,7 +23,6 @@
           <br>
           <br>
           <input type="password" name="password"  class="form-control" placeholder="비밀번호" data-pw="cant" v-model="password"/>
-          <div>특수문자 / 문자 / 숫자 포함 형태의 8~15자리</div>
           <div id="canpassword" v-if="passwordNull" style="color : green">비밀번호를 입력해주세요.</div>
           <div id="cantpassword" hidden="hidden" style="color : red">비밀번호 형식이다릅니다.</div>
           <br>
