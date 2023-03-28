@@ -7,7 +7,6 @@
       </a>
       <hr />
       <form v-on:submit.prevent="submitForm" @click="checkValue">
-        <!-- <form id="searchForm" action="http://localhost:8082/metaCar/main" method="get"> -->
         <ul class="nav nav-pills flex-column mb-auto">
           <li>
             <div class="input-group mb-2">
@@ -84,17 +83,18 @@
           </li>
           <li>
             <div class="input-group mb-3">
-              <input v-model="keyword" type="text" name="keyword" style="width: 190px" placeholder="검색어를 입력하세요" />
+              <input v-model="keyword" type="text" name="keyword" style="width: 180px" placeholder="검색어를 입력하세요" />
+              <button type="submit" class="btn btn-primary">검색</button>
             </div>
-            <button type="submit" class="btn btn-primary">검색</button>
           </li>
         </ul>
         <input v-model="pageNum" type="hidden" name="pageNum" />
       </form>
       <hr />
     </div>
+
     <!-- CARD -->
-    <div class="album py-3 bg-light align-items-center justify-content-center" style="width: 72%; float: left">
+    <div class="album py-3 bg-light align-items-center justify-content-center" style="width: 70%; float: left">
       <div class="container w-100">
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
           <div class="col" v-for="(car, i) in car_axios" :key="i">
@@ -126,7 +126,7 @@
     <!-- CARD END-->
 
     <!-- 사이드바 -->
-    <div class="d-flex flex-column flex-shrink-0 text-bg-dark" style="width: 280px; float: right">
+       <div class="d-flex flex-column flex-shrink-0 text-bg-dark" style="width: 280px; float: right">
       <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
         <use xlink:href="metaCar/main"></use>
         <span class="fs-4" style="text-align: center">예약된 차 확인</span>
@@ -156,6 +156,8 @@
     </ul>
 
     <!-- 사이드바 -->
+
+    <!-- 페이징 -->
     <div class="pull-right" style="clear: both; text-align: center">
       <ul style="text-align: center">
         <li v-if="curPage >= 2" style="display: inline-block; text-decoration-line: none" class="paginate_button prev">
@@ -176,7 +178,6 @@
 
 <script>
 import { ref, onMounted } from "vue";
-
 import Axios from "axios";
 
 import { useRouter } from "vue-router";
