@@ -90,17 +90,17 @@
                     </tr>
                 </thead>
                 <tbody>
-
-                    <tr>
-
+                    
+                    <tr v-for="list in cancellist"  :key="list.reserveNum">
+                        
                         <td>
-                            {{ reservenum }}
+                            {{ list.reserveNum }}
                         </td>
                         <td>
-                            {{ cancelwhy }}
+                            {{ list.cancelWhy }}
                         </td>
                         <td>
-                            {{ canceldate }}
+                            {{ list.cancelDate }}
                         </td>
 
                     </tr>
@@ -130,6 +130,7 @@ export default {
         const reservenum = ref('');
         const cancelwhy = ref('');
         const canceldate = ref('');
+        const cancellist = ref([]);
 
         const modal = ref(false);
 
@@ -156,10 +157,12 @@ export default {
 
                 reservenum.value = carcancel.data.cancel[0].reserveNum;
                 console.log(carcancel.data.rentalGet);
-                console.log(carcancel.data.cancel[0]);
+                console.log(carcancel.data.cancel);
                 checkrental.value = carcancel.data.rentalGet;
                 cancelwhy.value = carcancel.data.cancel[0].cancelWhy;
                 canceldate.value = carcancel.data.cancel[0].cancelDate;
+                cancellist.value = carcancel.data.cancel;
+                console.log(cancellist.value);
                 
             })
         };
@@ -192,7 +195,7 @@ export default {
             }
         };
 
-
+        console.log(cancellist.value);
 
         return {
             getRental,
@@ -209,6 +212,7 @@ export default {
             confirmCancelReservation,
             modal,
             toggleModal,
+            cancellist,
         }
     }
 }
