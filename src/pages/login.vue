@@ -26,7 +26,6 @@
             </form>
             <button class="w-100 btn btn-lg btn-primary" @click.prevent="signup()">회원가입</button>
             <p class="mt-5 mb-3 text-muted">&copy; 20230309 ~ 20230314</p>
-
             <c:if test="${not empty error}">
                 <p style="color: red">${error}</p>
             </c:if>
