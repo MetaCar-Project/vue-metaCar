@@ -94,7 +94,7 @@
     </div>
 
     <!-- CARD -->
-    <div class="album py-3 bg-light align-items-center justify-content-center" style="width: 70%; float: left">
+    <div class="album py-3 bg-light align-items-center justify-content-center" style="width: 55%; float: left">
       <div class="container w-100">
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
           <div class="col" v-for="(car, i) in car_axios" :key="i">
@@ -126,7 +126,7 @@
     <!-- CARD END-->
 
     <!-- 사이드바 -->
-       <div class="d-flex flex-column flex-shrink-0 text-bg-dark" style="width: 280px; float: right">
+      <div class="d-flex flex-column flex-shrink-0 text-bg-dark" style="width: 280px; float: right">
       <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
         <use xlink:href="metaCar/main"></use>
         <span class="fs-4" style="text-align: center">예약된 차 확인</span>
@@ -144,18 +144,6 @@
         -->
     </div>
     <hr />
-    <ul class="nav nav-pills flex-column mb-auto">
-      <li>
-        <a class="nav-link text-white">
-          <svg class="bi pe-none me-2" width="16" height="16">
-            <use xlink:href=""></use>
-          </svg>
-          <span id="textbox">대여한 차량이 없습니다.</span>
-          <!-- <input type="hidden" name="rental_id" value="" /> -->
-        </a>
-      </li>
-    </ul>
-
     <!-- 사이드바 -->
 
     <!-- 페이징 -->

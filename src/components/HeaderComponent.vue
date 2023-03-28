@@ -9,7 +9,7 @@
 
     <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
       <li>
-        <a href="#" class="logo">
+        <a href="/" class="logo">
           <img src="@/assets/Metacar.png" style="float: left; width: 300px; height: 150px; object-fit: cover;" />
         </a>
       </li>

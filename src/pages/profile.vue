@@ -39,7 +39,7 @@
                                             </button>
                                         </div>
                                         <div class="modal-body">
-                                            <p>정말로 수정하시겠습니까?</p>
+                                            <p>수정하실 새 전화번호를 입력해주세요.</p>
                                             <textarea v-model="phonenum"></textarea>
                                         </div>
                                         <div class="modal-footer">
