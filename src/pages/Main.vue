@@ -132,6 +132,7 @@
         <use xlink:href="metaCar/main"></use>
         <span class="fs-4" style="text-align: center">예약된 차 확인</span>
       </a>
+      <CarReturnButtonvue/>
       <hr />
       <div>
         <div v-if="rental_id == ''">나는 비로그인</div>
@@ -189,6 +190,10 @@ import Axios from "axios";
 import { useRouter } from 'vue-router';
 import CarReturnButtonvue from '@/components/CarReturnButton.vue';
 export default {
+  components: {
+		CarReturnButtonvue,
+	},
+
   setup() {
     const router = useRouter();
     const error = ref("");
@@ -294,6 +299,8 @@ checkid();
       },);
     });
     // getCarList();
+    
+
 
 
 
